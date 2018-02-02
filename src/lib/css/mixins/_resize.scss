@@ -1,0 +1,25 @@
+// 自适应屏幕
+@mixin queryWidth( $min, $max) {
+    $QUERY_BASE: 375;
+    @if $min==-1 {
+        @media screen and ( max-width: $max+px) {
+            html {
+                font-size: ( ($max+1) / $QUERY_BASE) * 100px;
+            }
+        }
+    }
+    @else if $max==-1 {
+        @media screen and ( min-width: $min+px) {
+            html {
+                font-size: ( $min / $QUERY_BASE) * 100px;
+            }
+        }
+    }
+    @else {
+        @media screen and ( min-width: $min+px) and ( max-width: $max+px) {
+            html {
+                font-size: ( $min / $QUERY_BASE) * 100px;
+            }
+        }
+    }
+}

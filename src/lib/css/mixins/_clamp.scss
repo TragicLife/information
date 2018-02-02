@@ -1,0 +1,8 @@
+// 多行省略号
+@mixin clamp($count: 1) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $count; // 显示的行数
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

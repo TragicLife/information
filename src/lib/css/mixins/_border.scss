@@ -1,0 +1,38 @@
+%border {
+    content: "";
+    position: absolute;
+    left: 0;
+    height: 1px;
+    width: 100%;
+    background: #d8d8d8;
+    transform-origin: left top;
+    -webkit-transform-origin: left top;
+    @media screen and (-webkit-min-device-pixel-ratio: 2) {
+        transform: scaleY(.5);
+        -webkit-transform: scaleY(.5);
+    }
+    @media screen and (-webkit-min-device-pixel-ratio: 3) {
+        transform: scaleY(.333);
+        -webkit-transform: scaleY(.333);
+    }
+    &:last-child {
+        height: 0;
+    }
+}
+
+// 1像素边框
+@mixin border-1px($dir: bottom) {
+    position: relative;
+    @if $dir==bottom {
+        &:after {
+            @extend %border;
+            bottom: 0;
+        }
+    }
+    @else if $dir==top {
+        &:before {
+            @extend %border;
+            top: 0;
+        }
+    }
+}
