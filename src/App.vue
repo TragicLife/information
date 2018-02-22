@@ -5,7 +5,9 @@
         <mt-button icon="back"></mt-button>
       </div>
     </mt-header>
-    <router-view/>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 

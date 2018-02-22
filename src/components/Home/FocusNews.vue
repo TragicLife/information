@@ -1,12 +1,15 @@
 <template>
-  <div>要闻</div>
+  <news-lists></news-lists>
 </template>
 <script>
-    export default {
-        data() {
-            return {}
-        }
+  import newsLists from '../base/newsLists.vue'
+
+  export default {
+    components: {newsLists},
+    data() {
+      return {}
     }
+  }
 </script>
 <style lang="scss">
 </style>

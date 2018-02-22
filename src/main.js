@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import {sync} from 'vuex-router-sync'
+import 'babel-polyfill'
 
 import './lib/css/global/_normalize.scss'
 import './lib/css/global/_global.scss'

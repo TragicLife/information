@@ -2,26 +2,30 @@
   <div class="home-container" v-cloak>
     <div class="nav-container">
       <ul class="nav-wrapper">
-        <li class="nav-item" :class="{active: item.id === currentNavId}" v-for="item in navData"
-            @click="changeNav(item)">{{item.title}}
+        <li class="nav-item" :class="{active: item.id == navId}" v-for="item in navData"
+            @click="navHandler(item)">{{item.title}}
         </li>
       </ul>
     </div>
-    <keep-alive>
-      <router-view/>
-    </keep-alive>
+    <transition name="slide-left">
+      <keep-alive>
+        <router-view class="home-router"></router-view>
+      </keep-alive>
+    </transition>
   </div>
 </template>
 
 <script>
   import axios from 'axios'
   import common from '../mixins/common'
+  import {mapState} from 'vuex'
+  import mType from '../store/mType'
 
   let navMap = {
-    1: '/Recommends',
-    2: '/FocusNews',
-    3: '/Videos',
-    4: '/TasteJokes'
+    1: '/Home/Recommends',
+    2: '/Home/FocusNews',
+    3: '/Home/Videos',
+    4: '/Home/TasteJokes'
   }
 
   export default {
@@ -29,9 +33,13 @@
     mixins: [common],
     data() {
       return {
-        navData: [],
-        currentNavId: 0
+        navData: []
       }
+    },
+    computed: {
+      ...mapState({
+        navId: state => state.navId
+      })
     },
     methods: {
       // TODO 获取导航栏
@@ -39,82 +47,38 @@
         axios.get('/content/verify/home/cate').then(res => {
           let data = res.data
           if (data.ResultCode === 0) {
-            this.currentNavId = data.cate_data[0].id
-            this.$router.replace({
-              path: '/Recommends',
-              query: {
-                id: this.currentNavId
-              }
-            })
+            let query = this.$route.query
+            let navId = query.id ? query.id : data.cate_data[0].id
+            this.setNav(navId)
             this.navData = data.cate_data
 //            this.navData = this.navData.concat(data.cate_data)
 //            this.navData = this.navData.concat(data.cate_data)
           }
         })
       },
-      // TODO 导航切换
-      changeNav(item) {
-        console.log(item)
-        this.currentNavId = item.id
+      // TODO 设置导航的id和子路由的跳转
+      setNav(id) {
+        this.$store.commit(mType.UPDATE_NAV_ID, id)
+        console.log(this.navId)
         this.$router.replace({
-          path: navMap[item.id],
+          path: navMap[id],
           query: {
-            id: this.currentNavId
+            id: id
           }
         })
-      }
-    },
-    filters: {
-      // TODO 过滤视频时间长度
-      durationFilter(val) {
-        // 往少于两位数的字符串前面补0
-        let padStart = (t) => {
-          return ('' + parseInt(t)).padStart(2, '0')
-        }
-        let second = padStart(val % 60)
-        let minute = padStart(val / 60)
-        let hour = ''
-        // 判断是否有小时位
-        if (parseInt(val / 3600) > 0) {
-          hour = padStart(val / 3600) + ':'
-          minute = padStart(val % 3600 / 60)
-        }
-        return `${hour}${minute}:${second}`
       },
-      // TODO 修改时间为和当前时间的差距
-      filterDate(val) {
-        if (!val) {
-          return ''
-        }
-        let date = new Date(val.replace(/-/g, '/'))
-        let cur = new Date()
-        let cal = (cur.getTime() - date.getTime()) / 1000
-        let calSecond = parseInt(cal / 60)
-        let calMinute = parseInt(cal / 60)
-        let calHour = parseInt(cal / 3600)
-        let calDay = parseInt(cal / 3600 / 30)
-        if (calSecond > 0) {
-          if (calHour > 0) {
-            // 大于14个小时则显示为昨天
-            if (calHour > 14 && calHour < 24) {
-              return '昨天'
-            }
-            if (calDay > 0) {
-              return `${calDay}天前`
-            }
-            return `${calHour}小时前`
-          }
-          return `${calMinute}分钟前`
-        } else {
-          return '刚刚'
-        }
+      // TODO 导航切换
+      navHandler(item) {
+        this.setNav(item.id)
       }
     },
     created() {
+      this.getNav()
+    },
+    activated() {
       this.editHeader({
         title: '资讯'
       })
-      this.getNav()
     }
   }
 </script>
@@ -125,31 +89,42 @@
     padding-top: .76rem;
     height: 100%;
     box-sizing: border-box;
-  }
-
-  .nav-container {
-    $height: .36rem;
-    position: fixed;
-    top: .4rem;
-    z-index: 1;
-    width: 100%;
-    height: $height;
-    line-height: $height;
-    background-color: #fff;
-    .nav-wrapper {
-      margin: 0 .1rem;
-      overflow: auto;
-      white-space: nowrap;
-      .nav-item {
-        display: inline-block;
+    .nav-container {
+      $height: .36rem;
+      position: fixed;
+      top: .4rem;
+      z-index: 1;
+      width: 100%;
+      height: $height;
+      line-height: $height;
+      background-color: #fff;
+      .nav-wrapper {
         margin: 0 .1rem;
-        color: #444;
-        font-size: .14rem;
-        &.active {
-          color: #da3838;
-          font-weight: 700;
+        overflow: auto;
+        white-space: nowrap;
+        .nav-item {
+          display: inline-block;
+          margin: 0 .1rem;
+          color: #444;
+          font-size: .14rem;
+          &.active {
+            color: #da3838;
+            font-weight: 700;
+          }
         }
       }
     }
+    .home-router {
+      transform-origin: left top 0;
+      -webkit-transform-origin: left top 0;
+      transition: all .25s linear;
+      -webkit-transition: all .25s linear;
+    }
+  }
+
+  .slide-left-leave-active, .slide-left-enter-active {
+    opacity: 0;
+    transform: scaleX(0);
+    -webkit-transform: scaleX(0);
   }
 </style>

@@ -40,7 +40,7 @@
         })
       }
     },
-    created() {
+    activated() {
       let query = this.$route.query
       this.editHeader({
         title: '详情',

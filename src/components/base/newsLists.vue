@@ -1,5 +1,5 @@
 <template>
-  <div class="recommends-container">
+  <div class="news-lists-container">
     <mt-loadmore :top-method="refreshData" :bottom-method="loadMoreData" :bottom-all-loaded="allLoaded" ref="loadmore">
       <ul class="list-container">
         <li class="list-item border-bottom" v-for="item in listData" @click="linkToDetail(item)">
@@ -45,6 +45,7 @@
         </li>
       </ul>
     </mt-loadmore>
+    <no-data v-if="listData.length === 0"></no-data>
   </div>
 </template>
 <script>
@@ -52,12 +53,14 @@
   import {Loadmore} from 'mint-ui'
   import common from '../../mixins/common'
   import {mapState} from 'vuex'
+  import noData from './noData.vue'
 
   export default {
     name: 'Home',
     mixins: [common],
     components: {
-      mtLoadmore: Loadmore
+      mtLoadmore: Loadmore,
+      noData
     },
     data() {
       return {
@@ -168,7 +171,7 @@
 <style lang="scss">
   @import '../../lib/css/mixins/clamp';
 
-  .recommends-container {
+  .news-lists-container {
     height: 100%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;

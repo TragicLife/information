@@ -10,7 +10,15 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/zixun': {//虚拟目录
+        target: 'http://www.yidianzixun.com/home/q/news_list_for_channel',//地址
+        changeOrigin: true,
+        pathRewrite: {
+          '^/zixun': ''//由于上面的虚拟目录实际上是不存在的，不去掉的话会变成'http://127.0.0.1:3000/zixun'，所以得去掉
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
