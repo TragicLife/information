@@ -12,6 +12,11 @@ import './lib/css/global/_global.scss'
 import 'mint-ui/lib/style.css'
 import './lib/js/axios.config'
 
+// 开发环境使用vConsole
+if (process.env.NODE_ENV === 'development') {
+  let VConsole = require('vconsole')
+  new VConsole()
+}
 sync(store, router) // 同步vue-router的状态到vuex
 Vue.config.productionTip = false
 
