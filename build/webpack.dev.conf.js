@@ -10,9 +10,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
 const opn = require('opn')
+const vConsolePlugin = require('vconsole-webpack-plugin')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
+
+const ENABLE_VCONSOLE = process.env.NODE_ENV === 'vconsole' // 判断是否使用vconsole
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -65,7 +68,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         to: config.dev.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
+    // 开发环境使用vConsole
+    new vConsolePlugin({
+      enable: ENABLE_VCONSOLE
+    })
   ]
 })
 
@@ -90,7 +97,7 @@ module.exports = new Promise((resolve, reject) => {
           : undefined
       }))
 
-      opn(`http://localhost:${port}${config.dev.assetsPublicPath}`)
+      opn(`http://localhost:${port}${config.dev.assetsPublicPath}index.html`)
       resolve(devWebpackConfig)
     }
   })

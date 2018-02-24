@@ -16,6 +16,12 @@ npm run build
 
 # build for production and view the bundle analyzer report
 npm run build --report
+
+# generate vendor.dll.js and vendor-manifest.json
+npm run dll
+
+# use vconsole for development
+npm run vconsole
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).

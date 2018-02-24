@@ -129,8 +129,7 @@
           minute = padStart(val % 3600 / 60)
         }
         return `${hour}${minute}:${second}`
-      }
-      ,
+      },
       // TODO 修改时间为和当前时间的差距
       filterDate(val) {
         if (!val) {
